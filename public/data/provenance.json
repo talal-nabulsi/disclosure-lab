@@ -1,0 +1,61 @@
+{
+  "snapshotSha256": "3c0ceaaec36459c546eb0df3e1ea6c23d8dc980b224d281206fe226906a0d24f",
+  "schemaVersion": 1,
+  "asOf": "2026-09-04",
+  "builtAt": "2026-09-05T07:54:00.521087+00:00",
+  "upstreamRevision": "464910341dbc9001387b3d5b96585bf1bc8c4e87",
+  "upstream": "https://raw.githubusercontent.com/kadoa-org/congress-trading-monitor/464910341dbc9001387b3d5b96585bf1bc8c4e87",
+  "priceConvention": "Dividend- and split-adjusted open / close research units; estimated total returns",
+  "disclosureConvention": "Official index filing date is a public-availability proxy; original publication timestamps unavailable",
+  "coverage": "Three selected House filers, transaction dates from 2020; upstream snapshot is not guaranteed complete",
+  "priceIssues": [
+    {
+      "ticker": "DWAC",
+      "reason": "HTTP Error 404: Not Found"
+    },
+    {
+      "ticker": "SQ",
+      "reason": "HTTP Error 404: Not Found"
+    },
+    {
+      "ticker": "WBA",
+      "reason": "HTTP Error 404: Not Found"
+    },
+    {
+      "ticker": "WORK",
+      "reason": "HTTP Error 404: Not Found"
+    },
+    {
+      "ticker": "XMEX",
+      "reason": "HTTP Error 404: Not Found"
+    }
+  ],
+  "officialDocumentsChecked": 70,
+  "records": 718,
+  "eligible": 431,
+  "priceSeries": 108,
+  "testedExperiments": 24,
+  "members": [
+    {
+      "id": "house_nancy_pelosi",
+      "name": "Nancy Pelosi",
+      "party": "D",
+      "state": "CA",
+      "eligible": 9
+    },
+    {
+      "id": "house_marjorietaylor_greene",
+      "name": "Marjorie Taylor Greene",
+      "party": "R",
+      "state": "GA",
+      "eligible": 411
+    },
+    {
+      "id": "house_daniel_crenshaw",
+      "name": "Daniel Crenshaw",
+      "party": "R",
+      "state": "TX",
+      "eligible": 11
+    }
+  ]
+}
