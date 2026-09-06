@@ -34,6 +34,10 @@ Primary records link to the US House Clerk's public financial disclosure archive
 
 Yahoo Finance responses supply the owner's private research snapshot. Prices are not included in the public repository. The MIT code license does not apply to third-party data or grant redistribution rights. Assess provider terms and obtain appropriate rights before fetching, publishing or distributing data.
 
-## Dependencies
+## Portraits and identity metadata
+
+Congressional portraits are hotlinked from [unitedstates/images](https://github.com/unitedstates/images), which documents its public-domain government portrait collection, and official House/Senate biography pages. Per-profile provenance links are retained in `public/data/directory.json`. Current/historical identity records from [unitedstates/congress-legislators](https://github.com/unitedstates/congress-legislators) support documented identity corrections. These identity records are distributed under a CC0 public-domain dedication. Portraits do not imply endorsement. A neutral initials fallback is used when an image or identity is unavailable.
+
+## Software dependencies
 
 React, Vinext, Recharts, Lucide, Tailwind, shadcn/Base UI and other dependencies retain their licenses, distributed with the packages. Versions are recorded in package-lock.json and requirements.txt.

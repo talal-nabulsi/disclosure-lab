@@ -78,6 +78,20 @@ To update disclosures, explicitly pass `--revision FULL_40_CHARACTER_UPSTREAM_CO
 
 ## Sources and coverage
 
+### Portrait directory
+
+The **Politicians** tab adds a separate searchable historical House/Senate directory. Search names/state abbreviations and filter chamber, party and backtest readiness. Source-profile aliases and cross-chamber histories are consolidated by corrected Bioguide identity; raw source links remain available. This is not a roster of all current elected officials. Directory membership does not expand the three-person verified backtest universe or imply verified returns.
+
+The initial directory has **345 consolidated profiles and 344 available portraits**, from 364 upstream congressional profiles.
+
+`npm run directory:refresh` rebuilds `public/data/directory.json` from the same pinned upstream commit and checks portrait response status/content type. Most portraits use the public-domain [unitedstates/images collection](https://github.com/unitedstates/images); missing portraits are sourced from official House/Senate biographies. Images are externally hosted, with an initials fallback if unavailable.
+
+The portrait audit found six wrong-identity groups in the upstream metadata, including two working URLs depicting the wrong person. `public/data/portrait-corrections.json` documents identity evidence and fixes; directory generation applies them without modifying the original trading records. “A. Mitchell” remains unresolved and has no assigned portrait. Generated counts, source hash and image-check failures are recorded in the directory manifest. Portrait verification is an identity/source and HTTP check, not a guarantee of future availability.
+
+The **How it’s built** tab explains the stack: custom TypeScript backtesting, React/Vinext interface, Recharts visualization, shadcn/Base UI primitives, Python/pypdf ingestion and Node-based tests. The cream/blue paper-workspace theme follows the supplied design reference. No external trading framework is used, and the engine is not independently institutionally validated.
+
+### Verified backtest sample
+
 1. Normalized input: [Kadoa Congress Trading Monitor](https://github.com/kadoa-org/congress-trading-monitor), pinned to [`464910341dbc9001387b3d5b96585bf1bc8c4e87`](https://github.com/kadoa-org/congress-trading-monitor/tree/464910341dbc9001387b3d5b96585bf1bc8c4e87). MIT attribution is in `THIRD_PARTY_NOTICES.md`. Upstream performance estimates are not used.
 2. Primary documents and filing-date indexes: [House Clerk Financial Disclosures](https://disclosures-clerk.house.gov/FinancialDisclosure), annual `YYYYFD.zip` archives and original PTR PDFs.
 3. Daily prices: Yahoo Finance chart responses, with source URLs and raw-response SHA-256 hashes. This is an unofficial endpoint with no availability guarantee.

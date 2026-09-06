@@ -1,0 +1,96 @@
+{
+  "audit": {
+    "directoryMembers": 345,
+    "sourceProfiles": 364,
+    "wrongIdentityGroups": 6,
+    "wrongIdentityProfiles": 7,
+    "wrongIdentityGroupsWithLoadingPortrait": 2,
+    "correctIdentityMissingPortraitGroups": 4,
+    "unresolvedProfileIds": ["senate_a_mitchell"],
+    "identitySources": ["https://unitedstates.github.io/congress-legislators/legislators-current.json", "https://unitedstates.github.io/congress-legislators/legislators-historical.json"],
+    "method": "Compared all directory member portrait IDs and every grouped profile name with current/historical identity records, checking name components, suffixes, state and service era; manually reviewed name variations and all mismatches. Filer transaction dates distinguish father/son collisions. Portrait verification is HTTP HEAD 200 with image content type, not a visual rendering check.",
+    "notes": "Alan Armstrong is already sourced separately from the official Senate website. A. Mitchell remains ambiguous and must keep a neutral placeholder. All suggested portrait URLs below returned HTTP 200 with image/jpeg or image/webp."
+  },
+  "corrections": [
+    {
+      "profileIds": ["house_aprilmcclain_delaney"],
+      "oldId": "D000620", "bioguide": "M001232", "name": "April McClain Delaney", "state": "MD", "party": "D", "district": 6,
+      "photo": "https://unitedstates.github.io/images/congress/225x275/M001232.jpg",
+      "photoSource": "https://github.com/unitedstates/images",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "D000620 is John K. Delaney, whose service ended in 2019. M001232 is April McClain Delaney, serving MD-06 from 2025."
+    },
+    {
+      "profileIds": ["house_michaela_collins", "house_michaela_collins_jr"],
+      "oldId": "C000640", "bioguide": "C001129", "name": "Mike Collins", "state": "GA", "party": "R", "district": 10,
+      "photo": "https://unitedstates.github.io/images/congress/225x275/C001129.jpg",
+      "photoSource": "https://github.com/unitedstates/images",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "C000640 is father Michael Allen 'Mac' Collins, whose service ended 2005. C001129 is Mike Allen Collins Jr. The unsuffixed source profile's trades run 2023-10-09 through 2024-12-03, identifying the son. Upstream office GA-08 is also incorrect; use GA-10."
+    },
+    {
+      "profileIds": ["house_richarddeandr_mccormick"],
+      "oldId": "M000371", "bioguide": "M001218", "name": "Richard McCormick", "state": "GA", "party": "R", "district": 7,
+      "photo": "https://unitedstates.github.io/images/congress/225x275/M001218.jpg",
+      "photoSource": "https://github.com/unitedstates/images",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "M000371 is Richard Cunningham McCormick, whose congressional service ended 1897. M001218 is Rich Dean McCormick, GA-06 in 2023-2025 and GA-07 from 2025."
+    },
+    {
+      "profileIds": ["house_cathymcmorris_rodgers"],
+      "oldId": "R000373", "bioguide": "M001159", "name": "Cathy McMorris Rodgers", "state": "WA", "party": "R", "district": 5,
+      "photo": "https://unitedstates.github.io/images/congress/225x275/M001159.jpg",
+      "photoSource": "https://github.com/unitedstates/images",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-historical.json",
+      "reason": "R000373 is Robert Lewis Rodgers of Pennsylvania, whose service ended 1947. M001159 is Cathy Anne McMorris Rodgers of WA-05. Upstream PA state is also incorrect."
+    },
+    {
+      "profileIds": ["house_elizabeth_fletcher"],
+      "oldId": "F000441", "bioguide": "F000468", "name": "Lizzie Fletcher", "state": "TX", "party": "D", "district": 7,
+      "photo": "https://unitedstates.github.io/images/congress/225x275/F000468.jpg",
+      "photoSource": "https://github.com/unitedstates/images",
+      "identitySource": "https://history.house.gov/People/Detail/25769805219",
+      "reason": "F000441 is Ernest Lee Fletcher of KY-06, whose service ended 2003. House History identifies Elizabeth Pannill Fletcher as F000468, Democrat from Texas serving since 2019; source transaction is dated 2026-04-08. Upstream party R and office KY-06 are also incorrect."
+    },
+    {
+      "profileIds": ["house_johnd_dingell"],
+      "oldId": "D000354", "bioguide": "D000355", "name": "John D. Dingell", "state": "MI", "party": "D", "district": 12,
+      "photo": "https://unitedstates.github.io/images/congress/225x275/D000355.jpg",
+      "photoSource": "https://github.com/unitedstates/images",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-historical.json",
+      "reason": "D000354 is his father John David Dingell. D000355 is John D. Dingell whose service ended 2015; source transaction date 2014-09-18 identifies the son. Final district was MI-12 (2013-2015); MI-15 was valid in earlier years."
+    },
+    {
+      "profileIds": ["house_christiand_menefee"],
+      "oldId": "M001245", "bioguide": "M001245", "name": "Christian D. Menefee", "state": "TX", "party": "D", "district": 18,
+      "photo": "https://menefee.house.gov/sites/evo-subsites/menefee.house.gov/files/evo-media-image/mene.jpg",
+      "photoSource": "https://menefee.house.gov/about/biography",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "Correct upstream identity; GitHub portrait missing. Official biography explicitly links this file as 'Download Representative Menefee's Photo'."
+    },
+    {
+      "profileIds": ["senate_jona_husted"],
+      "oldId": "H001104", "bioguide": "H001104", "name": "Jon Husted", "state": "OH", "party": "R", "district": null,
+      "photo": "https://www.husted.senate.gov/wp-content/uploads/2025/10/Husted_OfficialPortrait.webp",
+      "photoSource": "https://www.husted.senate.gov/about/",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "Correct upstream identity; GitHub portrait missing. Official biography explicitly links this file as the official portrait."
+    },
+    {
+      "profileIds": ["house_matthewrobert_vanepps"],
+      "oldId": "V000139", "bioguide": "V000139", "name": "Matt Van Epps", "state": "TN", "party": "R", "district": 7,
+      "photo": "https://vanepps.house.gov/sites/evo-subsites/vanepps.house.gov/files/styles/large/public/evo-media-image/vanepps.jpg.webp",
+      "photoSource": "https://vanepps.house.gov/about",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "Correct upstream identity; GitHub portrait missing. Image extracted from official biography page."
+    },
+    {
+      "profileIds": ["house_nicholas_begich_iii"],
+      "oldId": "B001323", "bioguide": "B001323", "name": "Nicholas J. Begich III", "state": "AK", "party": "R", "district": 0,
+      "photo": "https://begich.house.gov/sites/evo-subsites/begich.house.gov/files/evo-media-image/2024-11-15_ike_-begich_nick_0003_re_web_0.jpg",
+      "photoSource": "https://begich.house.gov/about",
+      "identitySource": "https://unitedstates.github.io/congress-legislators/legislators-current.json",
+      "reason": "Correct upstream identity; GitHub portrait missing. Image extracted from official biography page."
+    }
+  ]
+}
