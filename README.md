@@ -1,8 +1,6 @@
 # Disclosure Lab
 
-**The trade. The disclosure. The difference.**
-
-A source-linked research application comparing hypothetical stock purchases on a politician's reported transaction date with purchases after the official filing date. The interesting part is the accounting, evidence and limitations—not a sensational leaderboard.
+A source-linked research application comparing hypothetical stock purchases on a politician's reported transaction date with purchases after the official filing date.
 
 ## Features
 
@@ -12,7 +10,8 @@ A source-linked research application comparing hypothetical stock purchases on a
 - Copyable experiment settings and JSON exports with provenance, daily equity and trade audit.
 - Identical deterministic TypeScript engine in the browser and command line.
 - Python ingestion, automated source-PDF checks, snapshot validation and engine tests.
-- Responsive dark React interface with accessible component primitives and Recharts.
+- Responsive cream-themed React interface with accessible component primitives and Recharts.
+- Searchable historical politician directory with portraits and explicit backtest-coverage labels.
 
 No brokerage, orders, database or always-on API. Fetching/validating data happens offline; the site serves a snapshot and computes experiments locally. There is no hidden server-side trading engine.
 
