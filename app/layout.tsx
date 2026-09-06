@@ -14,7 +14,7 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Disclosure Lab — Test the trade. Test the timing.',
+  title: 'Disclosure Lab — Stock purchase backtester',
   description:
     'An auditable political stock-trading research lab comparing reported transaction dates with disclosure-date execution.',
   openGraph: {

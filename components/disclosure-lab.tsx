@@ -244,16 +244,7 @@ export default function DisclosureLab() {
       <div className="workspace">
         <div className="page-intro">
           <div>
-            <p className="eyebrow">
-              <span className="live-dot" /> POLITICAL TRADING RESEARCH
-            </p>
-            <h1>
-              A closer look at <span>political trades.</span>
-            </h1>
-            <p>
-              What happens when you follow a politician’s disclosed stock
-              purchases?
-            </p>
+            <h1 className="sr-only">Disclosure Lab</h1>
           </div>
           <div className="snapshot-stamp">
             <FileCheck2 size={20} />
@@ -573,7 +564,7 @@ export default function DisclosureLab() {
                     <div className="panel chart-panel">
                       <div className="chart-header">
                         <div>
-                          <h3>One starting balance. Three paths.</h3>
+                          <h3>Portfolio value</h3>
                           <p>
                             Portfolio value · adjusted-price total-return
                             estimate
@@ -1005,12 +996,7 @@ export default function DisclosureLab() {
         </Tabs>
         <section id="methodology" className="methodology">
           <div>
-            <p className="eyebrow">READ THE ASSUMPTIONS</p>
-            <h2>
-              Every number has
-              <br />a paper trail.
-            </h2>
-            <p>Inspect, reproduce and challenge the result.</p>
+            <h2>Methodology</h2>
           </div>
           <div className="methodology-body">
             <details open>

@@ -2,10 +2,8 @@
 import { useMemo, useState } from 'react';
 import {
   Search,
-  Users,
   ArrowUpRight,
   CheckCircle2,
-  Code2,
   BookOpen,
   FlaskConical,
 } from 'lucide-react';
@@ -102,10 +100,7 @@ export default function PoliticianDirectory({
     <section className="directory" aria-labelledby="directory-title">
       <div className="directory-heading">
         <div>
-          <p className="eyebrow">
-            <Users size={15} /> THE PEOPLE BEHIND THE FILINGS
-          </p>
-          <h2 id="directory-title">Explore the directory.</h2>
+          <h2 id="directory-title">Politicians</h2>
           <p>
             {directory.members.length} profiles across House and Senate
             disclosure history. Includes former members.
@@ -369,10 +364,7 @@ export function FrameworkGuide() {
   ];
   return (
     <section className="framework-guide">
-      <p className="eyebrow">
-        <Code2 size={15} /> UNDER THE HOOD
-      </p>
-      <h2>Our engine. Established tools around it.</h2>
+      <h2>Technology stack</h2>
       <p className="framework-intro">
         The backtest is custom-built, not a reskinned trading library. That
         makes its rules easy to inspect—but it has not been independently
