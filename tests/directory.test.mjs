@@ -24,7 +24,11 @@ test('directory preserves every upstream profile once while grouping aliases', (
 });
 test('directory never implies unverified members have backtest data', () => {
   const ready = d.members.filter((m) => m.backtestMember);
-  assert.equal(ready.length, disclosures.members.length);
+  assert.equal(
+    ready.length,
+    new Set(disclosures.trades.filter((t) => !t.exclusion).map((t) => t.member))
+      .size,
+  );
   assert.equal(
     ready.reduce((n, m) => n + m.eligible, 0),
     disclosures.trades.filter((t) => !t.exclusion).length,

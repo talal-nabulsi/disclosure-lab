@@ -21,7 +21,13 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 CACHE = ROOT / '.cache' / 'research'
 CACHE.mkdir(parents=True, exist_ok=True)
 REVISION = '464910341dbc9001387b3d5b96585bf1bc8c4e87'
-MEMBERS = ['house_nancy_pelosi', 'house_marjorietaylor_greene', 'house_daniel_crenshaw']
+# Selected for available House records, not for observed backtest returns.
+MEMBERS = [
+    'house_nancy_pelosi', 'house_marjorietaylor_greene', 'house_daniel_crenshaw',
+    'house_austin_scott', 'house_debbie_dingell', 'house_ed_perlmutter',
+    'house_kathy_castor', 'house_robertj_wittman', 'house_michaelt_mccaul',
+    'house_suzank_delbene', 'house_rohit_khanna', 'house_kevin_hern',
+]
 
 def fetch(url, refresh=False):
     path = CACHE / hashlib.sha256(url.encode()).hexdigest()
@@ -47,7 +53,11 @@ def main():
     parser.add_argument('--revision', default=REVISION)
     parser.add_argument('--as-of', default='2026-09-04')
     parser.add_argument('--refresh', action='store_true')
+    parser.add_argument('--members', default=','.join(MEMBERS), help='Comma-separated House filer IDs')
     args = parser.parse_args()
+    selected_members = list(dict.fromkeys(args.members.split(',')))
+    if not selected_members or any(not re.fullmatch(r'house_[a-z0-9_]+', member) for member in selected_members):
+        raise ValueError('Use supported House filer IDs separated by commas')
     end = dt.date.fromisoformat(args.as_of)
     if not re.fullmatch(r'[a-f0-9]{40}', args.revision):
         raise ValueError('A full upstream commit hash is required')
@@ -60,8 +70,9 @@ def main():
         rows = csv.DictReader(io.StringIO(archive.read(f'{year}FD.txt').decode('utf-8-sig')), delimiter='\t')
         for row in rows:
             indices[row['DocID']] = row
-    for member in MEMBERS:
+    for member in selected_members:
         payload = json.loads(fetch(f'{upstream}/public/data/filer/{member}.json'))
+        print(f'Loaded {payload["filer"]["full_name"]}: {len(payload["trades"])} source rows', flush=True)
         members.append({'id': member, 'name': payload['filer']['full_name'], 'party': payload['filer']['party'], 'state': payload['filer']['state']})
         for row in payload['trades']:
             if not ('2020-01-01' <= row['transaction_date'] <= args.as_of and row['filing_date'] <= args.as_of):
@@ -83,6 +94,7 @@ def main():
             records.append({'id': row['id'], 'member': member, 'ticker': row['ticker'], 'asset': row['asset_name'], 'assetType': row['asset_type'], 'type': row['transaction_type'], 'owner': row['owner'], 'transactionDate': row['transaction_date'], 'filingDate': row['filing_date'], 'amountLow': row['amount_range_low'], 'amountHigh': row['amount_range_high'], 'amountLabel': row['amount_range_label'], 'description': row.get('comment') or '', 'source': doc, 'exclusion': reason, 'verification': 'index matched' if index else 'unmatched'})
 
     urls = sorted({r['source'] for r in records if r['exclusion'] is None})
+    print(f'Checking {len(urls)} original House PDFs', flush=True)
     def document(url):
         try:
             raw = fetch(url)
@@ -93,6 +105,8 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         for url, value in pool.map(document, urls):
             documents[url] = value
+            if len(documents) % 25 == 0:
+                print(f'Checked {len(documents)}/{len(urls)} PDFs', flush=True)
     for row in records:
         if row['exclusion']:
             continue
@@ -170,7 +184,7 @@ def main():
             row['exclusion'] = 'Non-equity or non-USD price series; outside supported universe'
     if not all(t in price_data for t in ['SPY', 'QQQ']):
         raise RuntimeError('Benchmark price download failed; snapshot not published')
-    manifest = {'schemaVersion': 1, 'asOf': args.as_of, 'builtAt': dt.datetime.now(dt.timezone.utc).isoformat(), 'upstreamRevision': args.revision, 'upstream': upstream, 'priceConvention': 'Dividend- and split-adjusted open / close research units; estimated total returns', 'disclosureConvention': 'Official index filing date is a public-availability proxy; original publication timestamps unavailable', 'coverage': 'Three selected House filers, transaction dates from 2020; upstream snapshot is not guaranteed complete', 'priceIssues': issues, 'officialDocumentsChecked': len(documents)}
+    manifest = {'schemaVersion': 1, 'asOf': args.as_of, 'builtAt': dt.datetime.now(dt.timezone.utc).isoformat(), 'upstreamRevision': args.revision, 'upstream': upstream, 'priceConvention': 'Dividend- and split-adjusted open / close research units; estimated total returns', 'disclosureConvention': 'Official index filing date is a public-availability proxy; original publication timestamps unavailable', 'coverage': f'{len(members)} selected House filers, transaction dates from 2020; upstream snapshot is not guaranteed complete', 'priceIssues': issues, 'officialDocumentsChecked': len(documents)}
     output = ROOT / 'public' / 'data'
     output.mkdir(parents=True, exist_ok=True)
     snapshot = {'manifest': manifest, 'members': members, 'trades': records, 'prices': price_data}

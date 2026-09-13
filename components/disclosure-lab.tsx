@@ -18,6 +18,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { NativeSelect } from '@/components/ui/native-select';
+import PoliticianComparison from '@/components/politician-comparison';
+import { availableMembers } from '@/lib/comparison';
 import PoliticianDirectory, {
   FrameworkGuide,
   Portrait,
@@ -129,7 +131,7 @@ function download(data: unknown) {
 }
 
 export default function DisclosureLab() {
-  const [view, setView] = useState('backtest');
+  const [view, setView] = useState('compare');
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null),
     [loadError, setLoadError] = useState('');
   const [draft, setDraft] = useState<Config>(DEFAULT_CONFIG),
@@ -157,6 +159,7 @@ export default function DisclosureLab() {
         try {
           const raw = new URLSearchParams(location.search).get('experiment');
           if (raw) {
+            setView('backtest');
             const p = JSON.parse(raw);
             for (const k of Object.keys(c) as (keyof Config)[])
               if (typeof p[k] === typeof c[k])
@@ -187,7 +190,7 @@ export default function DisclosureLab() {
     setDraft((c) => ({ ...c, [key]: value }));
   const name =
     snapshot?.members.find((m) => m.id === config.member)?.name ||
-    'All three filers';
+    'Combined portfolio';
   const selectedPerson = memberForExperiment(config.member);
   const merged = r
     ? Array.from(
@@ -264,10 +267,36 @@ export default function DisclosureLab() {
           onValueChange={(v) => setView(String(v))}
         >
           <TabsList className="workspace-tab-list">
-            <TabsTrigger value="backtest">Backtest</TabsTrigger>
+            <TabsTrigger value="compare">Compare</TabsTrigger>
+            <TabsTrigger value="backtest">Individual</TabsTrigger>
             <TabsTrigger value="people">Politicians</TabsTrigger>
             <TabsTrigger value="frameworks">How it’s built</TabsTrigger>
           </TabsList>
+          <TabsContent value="compare">
+            {snapshot ? (
+              <PoliticianComparison
+                snapshot={snapshot}
+                onInspect={(c) => {
+                  setDraft(c);
+                  setConfig(c);
+                  setInspected(null);
+                  setVisible(25);
+                  setError('');
+                  setView('backtest');
+                }}
+              />
+            ) : loadError ? (
+              <div className="error-box" role="alert">
+                {loadError}
+              </div>
+            ) : (
+              <output className="panel loading-result">
+                <Clock3 size={24} />
+                <h2>Loading politician backtests</h2>
+                <p>Preparing the source-checked research snapshot.</p>
+              </output>
+            )}
+          </TabsContent>
           <TabsContent value="people">
             <PoliticianDirectory
               onChoose={(id) => {
@@ -310,10 +339,17 @@ export default function DisclosureLab() {
                     value={draft.member}
                     onChange={(v) => patch('member', v)}
                     options={[
-                      ['house_nancy_pelosi', 'Nancy Pelosi'],
-                      ['house_marjorietaylor_greene', 'Marjorie Taylor Greene'],
-                      ['house_daniel_crenshaw', 'Dan Crenshaw'],
-                      ['all', 'All three · shared portfolio'],
+                      ...(snapshot
+                        ? availableMembers(snapshot).map(
+                            (m) => [m.id, m.name] as [string, string],
+                          )
+                        : [
+                            ['house_nancy_pelosi', 'Nancy Pelosi'] as [
+                              string,
+                              string,
+                            ],
+                          ]),
+                      ['all', 'All eligible filers · shared cash'],
                     ]}
                   />
                   <div className="paired-controls">
@@ -1005,9 +1041,10 @@ export default function DisclosureLab() {
                 Disclosures come from Kadoa’s Congress Trading Monitor at a
                 pinned commit. Eligible purchases are checked against the House
                 Clerk’s index and original PDFs for ticker, type, date,
-                direction and amount range. This selected sample covers three
-                House filers from 2020 onward; it is not a complete
-                congressional database. Options, exercises, transfers,
+                direction and amount range. This selected sample screens{' '}
+                {snapshot?.members.length ?? 12} House filers from 2020 onward;
+                only those with eligible purchases can be compared. It is not a
+                complete congressional database. Options, exercises, transfers,
                 unresolved rows and possible duplicates are excluded and shown.
               </p>
               <p>

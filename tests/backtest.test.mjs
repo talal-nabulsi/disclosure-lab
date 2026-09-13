@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { availableMembers, runComparison } from '../lib/comparison.ts';
 import {
   DEFAULT_CONFIG,
   simulate,
@@ -128,4 +129,35 @@ test('changing prices after a closed position does not alter that trade', () => 
   s.prices.ABC.bars[4][1] = 9999;
   s.prices.ABC.bars[4][2] = 9999;
   assert.equal(simulate(s, c, 'transaction').positions[0].pnl, before);
+});
+test('comparison gives each eligible member independent cash and identical clocks', () => {
+  const { s, c } = fixture();
+  s.members = [
+    { id: 'm', name: 'First' },
+    { id: 'n', name: 'Second' },
+    { id: 'excluded', name: 'Excluded' },
+  ];
+  s.trades.push(
+    { ...s.trades[0], id: 'b', member: 'n' },
+    { ...s.trades[0], id: 'c', member: 'excluded', exclusion: 'Unsupported' },
+  );
+  assert.deepEqual(
+    availableMembers(s).map((m) => m.id),
+    ['m', 'n'],
+  );
+  const r = runComparison(s, c);
+  assert.equal(r.rows.length, 2);
+  for (const row of r.rows) {
+    assert.equal(row.result.disclosure.positions.length, 1);
+    assert.deepEqual(
+      row.result,
+      runExperiment(s, { ...c, member: row.member.id }),
+    );
+  }
+  assert.equal(
+    r.curve.at(-1).m_disclosure,
+    r.rows[0].result.disclosure.totalReturn,
+  );
+  assert.equal(r.curve.at(-1).m_disclosure, r.curve.at(-1).n_disclosure);
+  assert.equal(r.curve.at(-1).benchmark, r.benchmarkReturn);
 });

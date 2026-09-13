@@ -160,13 +160,16 @@ export function simulate(
     .filter((b) => b[0] >= c.from && b[0] <= c.to)
     .map((b) => b[0]);
   if (!calendar.length) throw new Error('No market data in that date range.');
-  const maps = Object.fromEntries(
-    Object.entries(s.prices).map(([ticker, p]) => [
-      ticker,
-      new Map(p.bars.map((b) => [b[0], b])),
-    ]),
-  );
   const candidates = selectedTrades(s, c);
+  const requiredTickers = new Set([
+    c.benchmark,
+    ...candidates.filter((t) => !t.exclusion).map((t) => t.ticker),
+  ]);
+  const maps = Object.fromEntries(
+    Object.entries(s.prices)
+      .filter(([ticker]) => requiredTickers.has(ticker))
+      .map(([ticker, p]) => [ticker, new Map(p.bars.map((b) => [b[0], b]))]),
+  );
   const skipped: Scenario['skipped'] = [];
   const events = new Map<string, { trade: Trade; exit: string | null }[]>();
   for (const trade of candidates) {

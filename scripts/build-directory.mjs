@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
 // Profile metadata is deliberately separate from the verified backtest universe.
@@ -88,10 +88,10 @@ for (const m of filers) {
     source: `${base}/filer/${m.id}.json`,
   });
   if (disclosures.members.some((x) => x.id === m.id)) {
-    g.backtestMember = m.id;
     g.eligible = disclosures.trades.filter(
       (t) => t.member === m.id && !t.exclusion,
     ).length;
+    g.backtestMember = g.eligible > 0 ? m.id : null;
   }
   groups.set(key, g);
 }
@@ -138,6 +138,11 @@ const manifest = {
 };
 await writeFile(
   new URL('../public/data/directory.json', import.meta.url),
+  JSON.stringify({ manifest, members }, null, 2),
+);
+await mkdir(new URL('../data/', import.meta.url), { recursive: true });
+await writeFile(
+  new URL('../data/directory.json', import.meta.url),
   JSON.stringify({ manifest, members }, null, 2),
 );
 console.log(JSON.stringify(manifest, null, 2));

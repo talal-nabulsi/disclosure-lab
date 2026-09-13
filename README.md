@@ -4,6 +4,7 @@ A source-linked research application comparing hypothetical stock purchases on a
 
 ## Features
 
+- Ten-politician comparison with portrait toggles, a shared return chart and sortable results. Switch between disclosure-time and trade-date estimates; inspect any member's full trade audit.
 - Two cash-constrained portfolios plus SPY or QQQ buy-and-hold.
 - Configurable politician, dates, holding period, allocation, capital, costs, execution delay, account owner, ticker, amount floor and filing lag.
 - Equity curves, drawdown, trade-level calculations, explicit exclusions and original House PDF links.
@@ -40,6 +41,7 @@ npm test
 npm run typecheck
 npm run validate:data
 npm run research -- --output result.json
+npm run compare -- --output comparison.json
 ```
 
 An exported browser experiment works directly as CLI input:
@@ -64,7 +66,7 @@ Or supply a JSON object with configuration overrides:
 }
 ```
 
-Other fields: `owner` (`all`, `SP`, `JT`, `self`), `ticker` (empty means all), `minAmount` (reported lower bound), `maxLag` (calendar days). Member IDs are in `public/data/disclosures.json`; `all` combines the three filers in one shared-cash portfolio. `npm run research -- --help` lists CLI flags.
+Other fields: `owner` (`all`, `SP`, `JT`, `self`), `ticker` (empty means all), `minAmount` (reported lower bound), `maxLag` (calendar days). Member IDs are in `public/data/disclosures.json`; `all` combines eligible records in one shared-cash portfolio. The **Compare** tab instead gives each eligible politician a separate account with identical settings and dates. Its line toggles affect visibility only. Sorting uses the selected entry timing; the table shows both timing scenarios. Inspecting a row carries its settings into the individual audit. `npm run research -- --help` and `npm run compare -- --help` list CLI flags. Both accept exported configurations.
 
 Refresh prices/indexes while retaining the pinned disclosure input:
 
@@ -75,11 +77,13 @@ npm run validate:data -- --record
 
 To update disclosures, explicitly pass `--revision FULL_40_CHARACTER_UPSTREAM_COMMIT` and `--as-of YYYY-MM-DD`. Changing the cutoff alone does not advance the pinned dataset. Review exclusion/provenance changes before publication. Identical snapshot bytes and settings give identical results; rerunning upstream endpoints later may not reproduce the older snapshot because adjusted prices and documents can be revised. Preserve caches privately for auditing.
 
+The default refresh screens twelve House filers. Override the selection with `--members house_nancy_pelosi,house_kevin_hern` using upstream House filer IDs. After rebuilding, run `npm run directory:refresh` to update readiness labels and the mirrored public/source directory files.
+
 ## Sources and coverage
 
 ### Portrait directory
 
-The **Politicians** tab adds a separate searchable historical House/Senate directory. Search names/state abbreviations and filter chamber, party and backtest readiness. Source-profile aliases and cross-chamber histories are consolidated by corrected Bioguide identity; raw source links remain available. This is not a roster of all current elected officials. Directory membership does not expand the three-person verified backtest universe or imply verified returns.
+The **Politicians** tab adds a separate searchable historical House/Senate directory. Search names/state abbreviations and filter chamber, party and backtest readiness. Source-profile aliases and cross-chamber histories are consolidated by corrected Bioguide identity; raw source links remain available. This is not a roster of all current elected officials. Directory membership does not imply backtest coverage: ten members currently have eligible purchases.
 
 The initial directory has **345 consolidated profiles and 344 available portraits**, from 364 upstream congressional profiles.
 
@@ -95,17 +99,26 @@ The **How it’s built** tab explains the stack: custom TypeScript backtesting, 
 2. Primary documents and filing-date indexes: [House Clerk Financial Disclosures](https://disclosures-clerk.house.gov/FinancialDisclosure), annual `YYYYFD.zip` archives and original PTR PDFs.
 3. Daily prices: Yahoo Finance chart responses, with source URLs and raw-response SHA-256 hashes. This is an unofficial endpoint with no availability guarantee.
 
-Initial cutoff: **September 4, 2026**, transaction dates from 2020. There are **718** normalized records, including excluded transactions, and **431** eligible purchases before experiment-specific constraints:
+Snapshot cutoff: **September 4, 2026**, transaction dates from 2020. There are **3,620** normalized records across twelve screened filers, including excluded transactions, and **871** eligible purchases across ten filers before experiment-specific constraints:
 
-| Filer | Eligible stock purchases |
-| --- | ---: |
-| Nancy Pelosi | 9 |
-| Marjorie Taylor Greene | 411 |
-| Daniel Crenshaw | 11 |
+| Filer                  | Eligible stock purchases |
+| ---------------------- | -----------------------: |
+| Nancy Pelosi           |                        9 |
+| Marjorie Taylor Greene |                      411 |
+| Daniel Crenshaw        |                       11 |
+| Austin Scott           |                       24 |
+| Debbie Dingell         |                       11 |
+| Ed Perlmutter          |                       18 |
+| Kathy Castor           |                       26 |
+| Robert J. Wittman      |                       54 |
+| Suzan K. DelBene       |                        7 |
+| Kevin Hern             |                      300 |
+
+Michael T. McCaul and Rohit Khanna were also screened but had zero eligible records under these checks. They remain in the exclusion dataset, not the comparison chart. Candidates were selected for available House records, not simulated returns; this is still an availability-selected sample. Individual strategy settings can yield fewer or zero executed purchases, which the results table reports explicitly. Rows with fewer than thirty executed purchases carry a small-sample warning; thirty is a UI warning threshold, not evidence of statistical sufficiency.
 
 This is a selected, incomplete sample—not a complete congressional feed. There are no Senate or presidential records; Trump is not included. Pelosi's sample is particularly small because many records concern options/exercises that this stock-only engine cannot model. Account ownership may be spouse/joint; a member's name does not prove they personally placed an order.
 
-The pipeline checked 70 original PDFs and retrieved 108 price series, including benchmarks and subsequently excluded instruments. Exact counts and snapshot checksum are in `public/data/provenance.json`.
+The pipeline checked **220 original PDFs** and retrieved **200 price series**, including benchmarks and subsequently excluded instruments. Exact counts and snapshot checksum are in `public/data/provenance.json`.
 
 ### What verified means
 
@@ -165,9 +178,12 @@ Pinned normalized filings + House index/PDFs + daily prices
 
 - `scripts/build-snapshot.py`: caching, PDF verification, exclusions, price adjustment, snapshot generation.
 - `lib/backtest.ts`: pure portfolio engine with no UI or network dependency.
+- `lib/comparison.ts`: independent per-member runs and aligned percentage-return curves; no cross-member cash sharing.
+- `components/politician-comparison.tsx`: comparison controls, portrait legend, chart, result table and export.
 - `components/disclosure-lab.tsx`: controls, charts, audit, source links and export.
 - `scripts/backtest.mjs`: headless runner using the same engine.
-- `scripts/validate-snapshot.mjs`: IDs/dates/prices, accepted-record checks and accounting invariants across 24 real-data configurations.
+- `scripts/compare.mjs`: headless all-eligible-member comparison and JSON export.
+- `scripts/validate-snapshot.mjs`: IDs/dates/prices, accepted-record checks and accounting invariants across 78 real-data configurations (twelve screened filers plus shared-cash mode, two benchmarks and three holding periods).
 - `tests/backtest.test.mjs`: small hand-checkable synthetic fixtures, never used as dashboard data.
 
 Developed with AI coding assistance. Source checks/tests are inspectable; AI assistance is not a substitute for independent financial-data review.

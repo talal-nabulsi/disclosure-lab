@@ -11,7 +11,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { NativeSelect } from '@/components/ui/native-select';
-import directoryData from '@/public/data/directory.json';
+import directoryData from '@/data/directory.json';
 
 export type DirectoryMember = {
   id: string;
@@ -114,10 +114,14 @@ export default function PoliticianDirectory({
       <div className="directory-note">
         <BookOpen size={19} />
         <p>
-          <strong>A directory, not a performance leaderboard.</strong> Only the
-          three PDF-checked filers are backtest ready. Other profiles link to
-          source records; no return is calculated from unverified data. Party
-          and state are historical source labels, not a current-office claim.
+          <strong>
+            Backtest coverage is separate from directory coverage.
+          </strong>{' '}
+          The {directory.members.filter((m) => m.backtestMember).length} filers
+          with PDF-checked eligible purchases are backtest ready. Other profiles
+          link to source records; no return is calculated from unverified data.
+          Party and state are historical source labels, not a current-office
+          claim.
         </p>
       </div>
       <div className="directory-filters">
@@ -354,7 +358,7 @@ export function FrameworkGuide() {
     [
       'Testing',
       'Node’s built-in test runner',
-      'Hand-checkable unit tests plus 24 real-data experiment checks. TypeScript checks types; tests do not guarantee financial accuracy.',
+      'Hand-checkable unit tests and real-data accounting checks across all screened filers. TypeScript checks types; tests do not guarantee financial accuracy.',
     ],
     [
       'Hosting & headless runs',
