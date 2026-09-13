@@ -190,6 +190,26 @@ Developed with AI coding assistance. Source checks/tests are inspectable; AI ass
 
 ## Server hosting
 
+### Firebase App Hosting
+
+The Firebase deployment uses a **separate `disclosure-lab` backend in `startupdb-app`**, without replacing its existing StartupDB backend. It serves the same React screens and TypeScript backtest engine. `firebase/build.mjs` creates a standalone Vite browser bundle; a zero-dependency Node 22 server serves it on App Hosting. The original Vinext/Sites build remains available through the existing build/start scripts.
+
+```sh
+npm run firebase:build
+node firebase/verify.mjs
+npm run firebase:deploy
+```
+
+The generated `.firebase-disclosure/` folder is ignored by Git. Deployment runs from that isolated folder and includes only compiled browser assets, the selected research snapshot and runtime configuration—not the repository, raw caches, credentials or unrelated local files. The `firebase/` sources and dependency lockfile reproduce the adapter. A valid local snapshot is required; the build refuses to substitute demo data.
+
+**Private access:** Firebase uses HTTP Basic authentication over HTTPS, with username `research` and a random high-entropy password held in Google Secret Manager (`disclosure-lab-access-password`). The server checks credentials before serving **every** page, JavaScript asset and data file. All responses are `private, no-store`; there is no unauthenticated static-asset/CDN bypass. Only `/healthz` returns a public, content-free health response. Startup fails closed if the password is missing or shorter than 32 characters. This is single-owner password protection, not Google sign-in, per-user permissions or an audit system; do not distribute the password or treat it as multi-user authorization.
+
+The owner's local credential handoff is `.cache/firebase-access.json` (ignored and restricted to file mode 600). Never commit it or put the password into URLs. Rotate it with `firebase apphosting:secrets:set disclosure-lab-access-password --project startupdb-app`, then redeploy so App Hosting picks up the new secret version. This project's backends share Firebase's default compute service account, so other code running as that account can also access the new secret; the backend is separate, not an IAM isolation boundary. Use a dedicated service account or project if stronger isolation is needed. When configuring another backend, review its identity before granting secret access and update the project/backend references in `firebase/deploy.mjs` and `firebase/firebase.json`.
+
+App Hosting requires Blaze billing. The configuration allows scale-to-zero, up to two instances, one CPU and 512 MiB each. These settings are **not a spending cap**; builds, storage, requests and network traffic may incur charges. Set billing alerts in your Firebase/Google Cloud account. The data remains private because market-data redistribution rights have not been established.
+
+### Original Workers-compatible runtime
+
 ```sh
 npm run build
 npm start -- --ip 0.0.0.0 --port 8787

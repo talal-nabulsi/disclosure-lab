@@ -41,3 +41,5 @@ next-env.d.ts
 .venv/
 *.tsbuildinfo
 public/data/snapshot.json
+/.firebase-disclosure/
+firebase-debug*.log

@@ -1,0 +1,9 @@
+{
+  "apphosting": [
+    {
+      "backendId": "disclosure-lab",
+      "rootDir": ".",
+      "ignore": ["node_modules", ".git", ".env*", "firebase-debug*.log"]
+    }
+  ]
+}

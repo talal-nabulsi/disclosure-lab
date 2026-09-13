@@ -1,0 +1,16 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 40
+  cpu: 1
+  memoryMiB: 512
+scripts:
+  buildCommand: node --check server.mjs
+  runCommand: node server.mjs
+outputFiles:
+  serverApp:
+    include: [public, server.mjs, package.json]
+env:
+  - variable: DISCLOSURE_ACCESS_PASSWORD
+    secret: disclosure-lab-access-password
+    availability: [RUNTIME]
